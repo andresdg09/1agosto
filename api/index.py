@@ -1,6 +1,5 @@
 from http.server import BaseHTTPRequestHandler
 
-# Definimos el contenido HTML, CSS y JS en una constante
 HTML_CONTENT = """<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -28,7 +27,7 @@ HTML_CONTENT = """<!DOCTYPE html>
             /* Fondo degradado rosa/rojo */
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 50%, #e63946 100%);
             font-family: 'Poppins', sans-serif;
-            overflow-x: hidden; /* Evita scroll horizontal */
+            overflow-x: hidden;
             position: relative;
             padding: 20px;
         }
@@ -36,46 +35,46 @@ HTML_CONTENT = """<!DOCTYPE html>
         /* --- Contenedor Principal en Cuadrícula --- */
         .main-container {
             display: grid;
-            /* 3 columnas: fotos laterales y mensaje central */
             grid-template-columns: 1fr auto 1fr;
-            /* 3 filas */
             grid-template-rows: repeat(3, auto);
             gap: 20px;
             align-items: center;
             justify-items: center;
             max-width: 1200px;
-            z-index: 10; /* Por encima de los corazones */
+            z-index: 10;
         }
 
-        /* --- El Mensaje Central --- */
+        /* --- El Mensaje Central Original --- */
         .card-mensaje {
-            grid-column: 2; /* Columna central */
-            grid-row: 2;    /* Fila central */
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            grid-column: 2;
+            grid-row: 2;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             padding: 40px 30px;
             border-radius: 25px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(230, 57, 70, 0.4);
+            box-shadow: 0 15px 35px rgba(230, 57, 70, 0.3);
             animation: popIn 1s ease-out forwards;
-            min-width: 300px;
+            min-width: 320px;
+            max-width: 500px;
         }
 
         .card-mensaje h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
+            font-size: 3rem;
             color: #ffffff;
-            text-shadow: 2px 3px 6px rgba(139, 0, 0, 0.5);
-            margin-bottom: 15px;
+            text-shadow: 2px 3px 6px rgba(139, 0, 0, 0.4);
+            margin-bottom: 20px;
             line-height: 1.2;
         }
 
         .card-mensaje p {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 600;
             color: #fff0f3;
             text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
         }
 
         /* --- Estilos de las Tarjetas de Fotos (Flip Cards) --- */
@@ -83,12 +82,11 @@ HTML_CONTENT = """<!DOCTYPE html>
             background-color: transparent;
             width: 150px;
             height: 200px;
-            perspective: 1000px; /* Necesario para el efecto 3D */
+            perspective: 1000px;
             cursor: pointer;
             animation: fadeIn 1.5s ease-out forwards;
         }
 
-        /* Contenedor interior que hace el giro */
         .flip-card-inner {
             position: relative;
             width: 100%;
@@ -100,17 +98,15 @@ HTML_CONTENT = """<!DOCTYPE html>
             border-radius: 15px;
         }
 
-        /* Clase que aplicaremos con JS al hacer clic */
         .flip-card.flipped .flip-card-inner {
             transform: rotateY(180deg);
         }
 
-        /* Estilos para la parte delantera y trasera */
         .flip-card-front, .flip-card-back {
             position: absolute;
             width: 100%;
             height: 100%;
-            -webkit-backface-visibility: hidden; /* Oculta la parte trasera al girar */
+            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             border-radius: 15px;
             overflow: hidden;
@@ -120,18 +116,16 @@ HTML_CONTENT = """<!DOCTYPE html>
             border: 4px solid white;
         }
 
-        /* Parte delantera: La Foto */
         .flip-card-front img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ajusta la foto sin deformarla */
+            object-fit: cover;
         }
 
-        /* Parte trasera: El Mensaje Bonito */
         .flip-card-back {
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             color: #a71d31;
-            transform: rotateY(180deg); /* Ya está girada por defecto */
+            transform: rotateY(180deg);
             padding: 15px;
             font-family: 'Dancing Script', cursive;
             font-size: 1.4rem;
@@ -139,7 +133,7 @@ HTML_CONTENT = """<!DOCTYPE html>
             line-height: 1.3;
         }
 
-        /* --- Posicionamiento de las Fotos en la Cuadrícula --- */
+        /* Posiciones en la cuadrícula alrededor del mensaje */
         .foto-1 { grid-column: 1; grid-row: 1; }
         .foto-2 { grid-column: 2; grid-row: 1; }
         .foto-3 { grid-column: 3; grid-row: 1; }
@@ -147,7 +141,7 @@ HTML_CONTENT = """<!DOCTYPE html>
         .foto-5 { grid-column: 2; grid-row: 3; }
         .foto-6 { grid-column: 3; grid-row: 3; }
 
-        /* Ajustes para móviles */
+        /* Adaptación para pantallas pequeñas / móviles */
         @media (max-width: 768px) {
             .main-container {
                 grid-template-columns: repeat(2, 1fr);
@@ -155,15 +149,14 @@ HTML_CONTENT = """<!DOCTYPE html>
                 gap: 15px;
             }
             .card-mensaje {
-                grid-column: 1 / -1; /* Ocupa todo el ancho */
+                grid-column: 1 / -1;
                 grid-row: 1;
                 padding: 25px 20px;
             }
-            .card-mensaje h1 { font-size: 2.5rem; }
+            .card-mensaje h1 { font-size: 2.3rem; }
             .card-mensaje p { font-size: 1.2rem; }
             .flip-card { width: 130px; height: 170px; }
             
-            /* Re-posicionar fotos en móvil */
             .foto-1 { grid-column: 1; grid-row: 2; }
             .foto-2 { grid-column: 2; grid-row: 2; }
             .foto-3 { grid-column: 1; grid-row: 3; }
@@ -172,17 +165,16 @@ HTML_CONTENT = """<!DOCTYPE html>
             .foto-6 { grid-column: 2; grid-row: 4; }
         }
 
-        /* --- Elementos Decorativos de Fondo (Corazones) --- */
+        /* Corazones flotantes de fondo */
         .heart {
             position: absolute;
             bottom: -50px;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 20px;
             animation: floatUp linear infinite;
             z-index: 1;
         }
 
-        /* --- Animaciones --- */
         @keyframes floatUp {
             0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 1; }
             100% { transform: translateY(-110vh) scale(1.3) rotate(360deg); opacity: 0; }
@@ -201,22 +193,19 @@ HTML_CONTENT = """<!DOCTYPE html>
 </head>
 <body>
 
-    <!-- Contenedor de la cuadrícula -->
     <div class="main-container">
         
-        <!-- Mensaje Central -->
+        <!-- Mensaje Central Restaurado -->
         <div class="card-mensaje">
-            <h1>¡Feliz día mi amor! ❤️</h1>
-            <p>Toca nuestras fotos para una sorpresa...</p>
+            <h1>¡Feliz día a la mejor novia del mundo! ❤️</h1>
+            <p>te amo muchooooo mi vidaaaaa 💕</p>
         </div>
 
-        <!-- --- LAS 6 TARJETAS DE FOTOS --- -->
-        
-        <!-- Foto 1 -->
+        <!-- Las 6 fotos con efecto de volteo -->
         <div class="flip-card foto-1" onclick="flipCard(this)">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <img src="https://images.mirror-ai.net/p/436338b9-43c3-4f27-9192-3a56ae23405f.jpg" alt="Nuestra foto 1">
+                    <img src="https://images.mirror-ai.net/p/436338b9-43c3-4f27-9192-3a56ae23405f.jpg" alt="Foto 1">
                 </div>
                 <div class="flip-card-back">
                     <p>Eres lo mejor que me ha pasado en la vida. Cada segundo a tu lado es un regalo. ❤️</p>
@@ -224,11 +213,10 @@ HTML_CONTENT = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- Foto 2 -->
         <div class="flip-card foto-2" onclick="flipCard(this)">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <img src="https://images.mirror-ai.net/p/d0d3b666-8809-417b-8395-585a9a10af41.jpg" alt="Nuestra foto 2">
+                    <img src="https://images.mirror-ai.net/p/d0d3b666-8809-417b-8395-585a9a10af41.jpg" alt="Foto 2">
                 </div>
                 <div class="flip-card-back">
                     <p>Amo tu sonrisa, tu forma de ser y cómo me haces sentir. ¡Gracias por existir! 🥰</p>
@@ -236,11 +224,10 @@ HTML_CONTENT = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- Foto 3 -->
         <div class="flip-card foto-3" onclick="flipCard(this)">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <img src="https://images.mirror-ai.net/p/63f8903c-e0da-4a57-932d-3db9968411d7.jpg" alt="Nuestra foto 3">
+                    <img src="https://images.mirror-ai.net/p/63f8903c-e0da-4a57-932d-3db9968411d7.jpg" alt="Foto 3">
                 </div>
                 <div class="flip-card-back">
                     <p>Contigo, todos los días son especiales. Eres mi lugar seguro y mi felicidad completa. 💖</p>
@@ -248,11 +235,10 @@ HTML_CONTENT = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- Foto 4 -->
         <div class="flip-card foto-4" onclick="flipCard(this)">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <img src="https://images.mirror-ai.net/p/b81109a1-077a-42c6-947f-8594589d6e27.jpg" alt="Nuestra foto 4">
+                    <img src="https://images.mirror-ai.net/p/b81109a1-077a-42c6-947f-8594589d6e27.jpg" alt="Foto 4">
                 </div>
                 <div class="flip-card-back">
                     <p>Me encantas demasiado. No me canso de decirte lo mucho que te amo, mi vida. 😍</p>
@@ -260,11 +246,10 @@ HTML_CONTENT = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- Foto 5 -->
         <div class="flip-card foto-5" onclick="flipCard(this)">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <img src="https://images.mirror-ai.net/p/f233f2da-d4f7-4148-83b3-8555e714660a.jpg" alt="Nuestra foto 5">
+                    <img src="https://images.mirror-ai.net/p/f233f2da-d4f7-4148-83b3-8555e714660a.jpg" alt="Foto 5">
                 </div>
                 <div class="flip-card-back">
                     <p>Gracias por cada risa, cada abrazo y por compartir tu vida conmigo. ¡Te adoro! ✨</p>
@@ -272,11 +257,10 @@ HTML_CONTENT = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- Foto 6 -->
         <div class="flip-card foto-6" onclick="flipCard(this)">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <img src="https://images.mirror-ai.net/p/3c97805a-5264-42b7-bd20-0063945f9570.jpg" alt="Nuestra foto 6">
+                    <img src="https://images.mirror-ai.net/p/3c97805a-5264-42b7-bd20-0063945f9570.jpg" alt="Foto 6">
                 </div>
                 <div class="flip-card-back">
                     <p>Eres mi presente y mi futuro. ¡Te amo muchooooo, hoy y siempre! ❤️🌹</p>
@@ -286,35 +270,29 @@ HTML_CONTENT = """<!DOCTYPE html>
 
     </div>
 
-    <!-- --- JAVASCRIPT --- -->
     <script>
-        // 1. Función para voltear la tarjeta al hacer clic
         function flipCard(cardElement) {
             cardElement.classList.toggle('flipped');
         }
 
-        // 2. Crear corazones flotantes de fondo
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 4 + 's'; // Entre 4 y 7s
-            heart.style.fontSize = Math.random() * 20 + 15 + 'px'; // Entre 15 y 35px
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            heart.style.fontSize = Math.random() * 20 + 15 + 'px';
             document.body.appendChild(heart);
 
-            // Borrar el corazón después de que termine la animación
             setTimeout(() => {
                 heart.remove();
             }, 7000);
         }
 
-        // Crear corazones continuamente
         setInterval(createHeart, 300);
 
-        // 3. Fuegos Artificiales al abrir la página
         function launchFireworks() {
-            const duration = 5 * 1000; // 5 segundos
+            const duration = 5 * 1000;
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
@@ -331,11 +309,10 @@ HTML_CONTENT = """<!DOCTYPE html>
 
                 const particleCount = 50 * (timeLeft / duration);
                 
-                // Disparos desde lados aleatorios
                 confetti(Object.assign({}, defaults, { 
                     particleCount, 
                     origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-                    colors: ['#ff007f', '#ff4d6d', '#ff758c', '#ffffff', '#e63946'] // Rosas y rojos
+                    colors: ['#ff007f', '#ff4d6d', '#ff758c', '#ffffff', '#e63946']
                 }));
                 confetti(Object.assign({}, defaults, { 
                     particleCount, 
@@ -345,7 +322,6 @@ HTML_CONTENT = """<!DOCTYPE html>
             }, 250);
         }
 
-        // Ejecutar los fuegos artificiales apenas cargue la página
         window.onload = launchFireworks;
     </script>
 </body>
@@ -354,12 +330,8 @@ HTML_CONTENT = """<!DOCTYPE html>
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        # 1. Configurar encabezados de respuesta
         self.send_response(200)
-        # Especificamos que la respuesta es HTML
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
-        
-        # 2. Enviar el contenido HTML completo
         self.wfile.write(HTML_CONTENT.encode('utf-8'))
         return
